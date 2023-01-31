@@ -40,11 +40,12 @@ router.post('/', (req, res, next) => {
   });
 
 
-  router.get('/:movie_id' , (req , res)=>{
+  router.get('/:movie_id' , (req , res , next )=>{
       /// Id yi nasıl alcam : params altında biriktilirmektedir. 
 
       const promise=Movie.findById(req.params.movie_id);
-
+        if(!movie)
+        next( {message:'the was not found'})
       promise.then((movie)=>{
           res.json(movie);
       }).catch((err)=>{
@@ -52,5 +53,9 @@ router.post('/', (req, res, next) => {
       })
 
   })
+
+  //// Hata mesajını json tipinde  göstereceğiz 
+
+
 
 module.exports = router;
