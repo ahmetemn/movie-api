@@ -16,8 +16,9 @@ router.post('/', (req, res, next) => {
     country: country,
     year: year
   });
-  /// ilk önce git db de     mongoose.Promise = global.Promise;   bu kodu yaz 
+
   
+  /// ilk önce git db de     mongoose.Promise = global.Promise;   bu kodu yaz 
   const promise = movie.save(); /// datayı mongo db ye kaydetme işlemi 
   promise.then((data ) =>{
      res.json(data);
@@ -26,16 +27,30 @@ router.post('/', (req, res, next) => {
   })
 
 })
+  router.get("/" , (req , res) =>{
+    ///ilk parametreyi {} boş geçtik 
+    const promise= Movie.find({})
+    promise.then((data)=>{
+      res.json(data);
+    }).catch((err)=>{
+
+      res.json(err)
+    })
+
+  });
 
 
-router.get('/' , (req , res  )=>{
- 
-      const promise = Movie.find({});
-      promise.then((data) =>{
-        res.json(data);
+  router.get('/:movie_id' , (req , res)=>{
+      /// Id yi nasıl alcam : params altında biriktilirmektedir. 
+
+      const promise=Movie.findById(req.params.movie_id);
+
+      promise.then((movie)=>{
+          res.json(movie);
       }).catch((err)=>{
-        res.json(err);
+         res.json(err);
       })
 
-})
+  })
+
 module.exports = router;
