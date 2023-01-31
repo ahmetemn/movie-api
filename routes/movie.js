@@ -17,44 +17,54 @@ router.post('/', (req, res, next) => {
     year: year
   });
 
-  
+
   /// ilk önce git db de     mongoose.Promise = global.Promise;   bu kodu yaz 
   const promise = movie.save(); /// datayı mongo db ye kaydetme işlemi 
-  promise.then((data ) =>{
-     res.json(data);
-  }).catch((err)=>{
-      res.json(err);
+  promise.then((data) => {
+    res.json(data);
+  }).catch((err) => {
+    res.json(err);
   })
 
 })
-  router.get("/" , (req , res) =>{
-    ///ilk parametreyi {} boş geçtik 
-    const promise= Movie.find({})
-    promise.then((data)=>{
-      res.json(data);
-    }).catch((err)=>{
+router.get("/", (req, res) => {
+  ///ilk parametreyi {} boş geçtik 
+  const promise = Movie.find({})
+  promise.then((data) => {
+    res.json(data);
+  }).catch((err) => {
 
-      res.json(err)
-    })
-
-  });
-
-
-  router.get('/:movie_id' , (req , res , next )=>{
-      /// Id yi nasıl alcam : params altında biriktilirmektedir. 
-
-      const promise=Movie.findById(req.params.movie_id);
-        if(!movie)
-        next( {message:'the was not found'})
-      promise.then((movie)=>{
-          res.json(movie);
-      }).catch((err)=>{
-         res.json(err);
-      })
-
+    res.json(err)
   })
 
-  //// Hata mesajını json tipinde  göstereceğiz 
+});
+
+
+router.get('/:movie_id', (req, res, next) => {
+  /// Id yi nasıl alcam : params altında biriktilirmektedir. 
+
+  const promise = Movie.findById(req.params.movie_id);
+ 
+  promise.then((movie)=>{
+    res.json(movie);
+  }).catch(() => {
+    res.json({message:'the film was not found'});
+  })
+
+});
+
+
+//How can we update films detail ?  
+router.put('/:movie_id', (req, res, next) => {
+  //this function must  have  two parameters /////First= paramaters movie_id , Second= parameters new post data
+  const promise = Movie.findByIdAndUpdate(req.params.movie_id, req.body);
+  promise.then((movie) => {
+    res.json(movie);
+  }).catch(() => {
+    res.json({message:'the film was not found'});
+  });
+});
+
 
 
 
