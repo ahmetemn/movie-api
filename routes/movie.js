@@ -3,6 +3,9 @@ var router = express.Router();
 
 // bunun için öncelikle model dosyamızı sayafaya import etmemiz gerekir 
 const Movie = require("../models/Movie.js")
+
+
+
 router.post('/', (req, res, next) => {
 
   ///request nesnesinin altında body altın bir obje var  bu obje bizim göndermiş olduğumuz post bodysini burda barındırır
@@ -31,7 +34,8 @@ router.get("/", (req, res) => {
   ///ilk parametreyi {} boş geçtik 
   const promise = Movie.find({})
   promise.then((data) => {
-    res.json(data);
+
+    res.json(data)
   }).catch((err) => {
 
     res.json(err)
@@ -46,9 +50,15 @@ router.get('/:movie_id', (req, res, next) => {
   const promise = Movie.findById(req.params.movie_id);
  
   promise.then((movie)=>{
-    res.json(movie);
-  }).catch(() => {
-    res.json({message:'the film was not found'});
+    if(!movie)
+    {
+       next({message:"The movie was not found"})
+    }
+    else{
+      res.json(movie)
+    }
+  }).catch((err) => {
+    res.json(err);
   })
 
 });
@@ -56,16 +66,39 @@ router.get('/:movie_id', (req, res, next) => {
 
 //How can we update films detail ?  
 router.put('/:movie_id', (req, res, next) => {
-  //this function must  have  two parameters /////First= paramaters movie_id , Second= parameters new post data
-  const promise = Movie.findByIdAndUpdate(req.params.movie_id, req.body);
+  //this function must  have  Three parameters /////First= paramaters movie_id , Second= parameters new post data , Third = parameters instant change
+  const promise = Movie.findByIdAndUpdate(req.params.movie_id, req.body ,{new:true});
   promise.then((movie) => {
-    res.json(movie);
-  }).catch(() => {
-    res.json({message:'the film was not found'});
-  });
+    if(!movie)
+    {
+       next({message:"The movie was not found"})
+    }
+    else{
+      res.json(movie)
+    }
+  }).catch((err) => {
+    res.json(err);
+  })
 });
 
 
+///How can we delete film 
+router.delete('/:movie_id' , (req, res , next) =>{
+  const promise = Movie.findByIdAndRemove(req.params.movie_id)
+
+      promise.then((movie) =>{
+            if(!movie)
+            {
+               next({message:"The movie was not found"})
+            }
+            else{
+              res.json(movie)
+            }
+         
+      }).catch((err)=>{
+        res.json(err)
+      })  
+})
 
 
 module.exports = router;
