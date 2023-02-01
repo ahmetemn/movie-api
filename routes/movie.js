@@ -45,29 +45,26 @@ router.get("/", (req, res) => {
 
 ///Top 10 list 
 
-  router.get('/top10' , (req , res) =>{
-                                //sorting from largest to smallest
-        const promise = Movie.find({}).limit(10).sort({imdb_score:-1});
-        promise.then((data)=>{
-          res.json(data)
-        }).catch((err)=>{
-          res.json(err)
-        })
-
+router.get('/top10', (req, res) => {
+  //sorting from largest to smallest
+  const promise = Movie.find({}).limit(10).sort({ imdb_score: -1 });
+  promise.then((data) => {
+    res.json(data)
+  }).catch((err) => {
+    res.json(err)
   })
 
-
+})
 
 router.get('/:movie_id', (req, res, next) => {
   /// Id yi nasıl alcam : params altında biriktilirmektedir. 
   const promise = Movie.findById(req.params.movie_id);
- 
-  promise.then((movie)=>{
-    if(!movie)
-    {
-       next({message:"The movie was not found"})
+
+  promise.then((movie) => {
+    if (!movie) {
+      next({ message: "The movie was not found" })
     }
-    else{
+    else {
       res.json(movie)
     }
   }).catch((err) => {
@@ -80,13 +77,12 @@ router.get('/:movie_id', (req, res, next) => {
 //How can we update films detail ?  
 router.put('/:movie_id', (req, res, next) => {
   //this function must  have  Three parameters /////First= paramaters movie_id , Second= parameters new post data , Third = parameters instant change
-  const promise = Movie.findByIdAndUpdate(req.params.movie_id, req.body ,{new:true});
+  const promise = Movie.findByIdAndUpdate(req.params.movie_id, req.body, { new: true });
   promise.then((movie) => {
-    if(!movie)
-    {
-       next({message:"The movie was not found"})
+    if (!movie) {
+      next({ message: "The movie was not found" })
     }
-    else{
+    else {
       res.json(movie)
     }
   }).catch((err) => {
@@ -96,22 +92,42 @@ router.put('/:movie_id', (req, res, next) => {
 
 
 ///How can we delete film 
-router.delete('/:movie_id' , (req, res , next) =>{
+router.delete('/:movie_id', (req, res, next) => {
   const promise = Movie.findByIdAndRemove(req.params.movie_id)
 
-      promise.then((movie) =>{
-            if(!movie)
-            {
-               next({message:"The movie was not found"})
-            }
-            else{
-              res.json(movie)
-            }
-         
-      }).catch((err)=>{
-        res.json(err)
-      })  
+  promise.then((movie) => {
+    if (!movie) {
+      next({ message: "The movie was not found" })
+    }
+    else {
+      res.json(movie)
+    }
+
+  }).catch((err) => {
+    res.json(err)
+  })
 })
+
+///Between year
+
+
+router.get('/between/:start_year/:end_year', (req, res) => {
+    const{start_year , end_year} = req.params
+  const promise = Movie.find({
+            ///$gte means: greater or equal
+          ///$lte means: less than or equal
+          year:{"$gte": parseInt(start_year ),"$lte":parseInt(end_year)}
+
+  });
+
+  promise.then((movie) => {
+
+    res.json(movie)
+
+  }).catch((err) => {
+    res.json(err)
+  });
+});
 
 
 
