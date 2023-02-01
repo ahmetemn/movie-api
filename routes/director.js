@@ -161,6 +161,26 @@ router.put('/:director_id', (req, res, next) => {
     }).catch((err) =>{
         res.json(err)
     })
+});
+
+
+router.delete('/:director_id' , (req , res , next) =>{
+
+        const promise = Director.findByIdAndRemove(req.params.director_id )
+
+        promise.then((director) =>{
+
+            if(!director)
+            {
+                    next({message:"there isnt director"})
+            }
+            else{
+                res.json(director)
+            }
+
+        }).catch((err)=>{
+            res.json(err)
+        })
 })
 
 
