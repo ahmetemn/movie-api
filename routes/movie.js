@@ -43,10 +43,23 @@ router.get("/", (req, res) => {
 
 });
 
+///Top 10 list 
+
+  router.get('/top10' , (req , res) =>{
+                                //sorting from largest to smallest
+        const promise = Movie.find({}).limit(10).sort({imdb_score:-1});
+        promise.then((data)=>{
+          res.json(data)
+        }).catch((err)=>{
+          res.json(err)
+        })
+
+  })
+
+
 
 router.get('/:movie_id', (req, res, next) => {
   /// Id yi nasıl alcam : params altında biriktilirmektedir. 
-
   const promise = Movie.findById(req.params.movie_id);
  
   promise.then((movie)=>{
@@ -99,6 +112,7 @@ router.delete('/:movie_id' , (req, res , next) =>{
         res.json(err)
       })  
 })
+
 
 
 module.exports = router;
