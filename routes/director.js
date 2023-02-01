@@ -24,13 +24,56 @@ router.post('/' , (req,res)=>{
 } )
 
 
+router.get('/' , (req, res) =>{
+    const promise = Director.aggregate([
+        {
+            $lookup:{
+                from:'movies',
+                localField:'_id',
+                foreignField:'director_id',
+                as:'movies'
 
-router.get('/' , (req , res )=>{
-    const promise = Director.find({});
+            }
+        },
+
+        {
+            $unwind:{
+                path:'$movies',
+                preserveNullAndEmptyArrays:true
+            }
+        },
+        {
+            $group:{
+                _id:{
+                    _id:'$_id',
+                    name:'$name',
+                    surname:'$surname',
+                    bio:'$bio',
+
+                },
+                movies:{
+                    $push:'$movies'
+                }
+            }
+        },{
+            $project:{
+                _id:'$_id._id',
+                name:'$_id.name',
+                surname:'$_id.surname',
+                movies:'$movies'
+            }
+        }
+
+    ]);
+
     promise.then((data) =>{
-        res.json(data)
-    }).catch((data)=>{
-        res.json(data)
+        res.json(data);
+    }).catch((err)=>{
+        res.json(err)
     })
-})
+
+
+});
+
+
 module.exports=router

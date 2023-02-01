@@ -10,9 +10,10 @@ router.post('/', (req, res, next) => {
 
   ///request nesnesinin altında body altın bir obje var  bu obje bizim göndermiş olduğumuz post bodysini burda barındırır
 
-  const { title, imdb_score, category, country, year } = req.body;
+  const {director_id, title, imdb_score, category, country, year } = req.body;
 
   const movie = new Movie({
+    director_id:director_id,
     title: title,
     imdb_score: imdb_score,
     category: category,
