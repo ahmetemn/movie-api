@@ -1,5 +1,5 @@
 
-const mongoose= require('mongoose')
+const mongoose = require('mongoose')
 const express = require('express');
 const router = express.Router();
 const Director = require("../models/Director")
@@ -24,12 +24,12 @@ router.post('/', (req, res) => {
 
 })
 ///director detail 
-router.get('/:director_id', (req, res) => {
+router.get('/:director_id', (req, res , next) => {
     const promise = Director.aggregate([
 
-            {
-             $match: {
-               '_id': mongoose.Types.ObjectId(req.params.director_id)
+        {
+            $match: {
+                '_id': mongoose.Types.ObjectId(req.params.director_id)
             }
 
         },
@@ -73,8 +73,17 @@ router.get('/:director_id', (req, res) => {
 
     ]);
 
-    promise.then((data) => {
-        res.json(data);
+    promise.then((director) => {
+
+        if(!director)
+        {
+            next({message:"there isnt director"})
+        }
+        else
+        {
+            res.json(director)
+        }
+
     }).catch((err) => {
         res.json(err)
     })
@@ -88,7 +97,7 @@ router.get('/:director_id', (req, res) => {
 router.get('/', (req, res) => {
     const promise = Director.aggregate([
 
-    
+
         {
             $lookup: {
                 from: 'movies',
@@ -138,7 +147,21 @@ router.get('/', (req, res) => {
 
 });
 
+///update director 
+router.put('/:director_id', (req, res, next) => {
+    const promise = Director.findByIdAndUpdate(req.params.director_id, req.body, { new: true })
 
+    promise.then((director) => {
+        if (!director) {
+            next({message: "there isnt director " })
+        }
+        else {
+            res.json(director)
+        }
+    }).catch((err) =>{
+        res.json(err)
+    })
+})
 
 
 
