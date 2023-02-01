@@ -109,8 +109,6 @@ router.delete('/:movie_id', (req, res, next) => {
 })
 
 ///Between year
-
-
 router.get('/between/:start_year/:end_year', (req, res) => {
     const{start_year , end_year} = req.params
   const promise = Movie.find({
