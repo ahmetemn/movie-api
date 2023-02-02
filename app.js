@@ -8,12 +8,17 @@ const movie = require('./routes/movie');
 const director = require('./routes/director');
 const app = express();
 
-
+///Middleware
+ 
+const verifyToken=require('./middleware/verify-token');
 ///Db Connection 
 
 const db = require('./helper/db')()
 
-
+//Config
+const config= require('./config')
+///use global
+app.set('api_secret_key' , config.api_secret_key);
 
 
 
@@ -31,6 +36,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+
+///api altındaki hertürlü  end point için geçerli 
+app.use('/api', verifyToken)
 app.use('/api/movie', movie);
 app.use('/api/director' ,  director)
 // catch 404 and forward to error handler
