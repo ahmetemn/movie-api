@@ -9,10 +9,14 @@ const MovieSchema= new Schema({
             type:String,
             required:[true , '`{PATH}` required area'],     
             maxlength:[150 , '`{PATH}`max 150 character'],
-            minlength:[2, '`{PATH}` min 1 character']
+            minlength:[1, '`{PATH}` min 1 character']
 
         }, 
-            category: String,
+            category: {
+                type:String,
+                maxlength:[150,  '`{PATH}` max 150 character '],
+                minlength:1
+            },
             country:String,
             year:Number,
             imdb_score:Number,
